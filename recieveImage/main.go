@@ -70,13 +70,13 @@ func updateTempValue(w http.ResponseWriter,r *http.Request){
 func updateBalanceValue(w http.ResponseWriter, r *http.Request){
 	r.ParseForm()
 	fmt.Println("path",r.URL.Path)
-	balanceValueBuff := r.Form["balance"]
+	balanceValueBuff := r.FormValue("value")
 
 	balanceValue = string(balanceValueBuff[0])
-	fmt.Println("balance value:",tempValue)
-	saveTempValue(tempValue)
+	fmt.Println("balance value:",balanceValue)
+	saveTempValue(balanceValue)
 		
-	fmt.Fprintf(w,"submit sucess ,balance value : %s",tempValue)
+	fmt.Fprintf(w,"submit sucess ,balance value : %s",balanceValue)
 		
 }
 func readBalanceValue(w http.ResponseWriter,r *http.Request){
