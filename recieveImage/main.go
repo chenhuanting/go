@@ -18,6 +18,7 @@ type ResponseData struct{
 	Value string `json:"value"`
 }
 var tempValue string;
+var balanceValue string ;
 
 func saveTempValue(temp string){
 	tempValue = temp;
@@ -25,6 +26,12 @@ func saveTempValue(temp string){
 func getTempValue() string {
 
 	return tempValue
+}
+func savebalanceValue(value string){
+	balanceValue = value
+}
+func getBalanceValue() string{
+	return balanceValue
 }
 
 func updateTempValue(w http.ResponseWriter,r *http.Request){
@@ -60,7 +67,36 @@ func updateTempValue(w http.ResponseWriter,r *http.Request){
 	
 
 }
+func updateBalanceValue(w http.ResponseWriter, r *http.Request){
+	r.ParseForm()
+	fmt.Println("path",r.URL.Path)
+	balanceValueBuff := r.Form["balance"]
 
+	balanceValue = string(balanceValueBuff[0])
+	fmt.Println("balance value:",tempValue)
+	saveTempValue(tempValue)
+		
+	fmt.Fprintf(w,"submit sucess ,balance value : %s",tempValue)
+		
+}
+func readBalanceValue(w http.ResponseWriter,r *http.Request){
+	r.ParseForm()
+	var sendValue string 
+	sendValue = getBalanceValue()
+	fmt.Println("balance  value ：",sendValue)
+	d := ResponseData{
+		Value: sendValue,
+	}
+	s := ResponseStruct{
+		Code : 200,
+		Message : "recieve sucess ",
+		Data : d,
+	}
+	b , _ := json.Marshal(s)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(b)
+
+}
 func recieveImage(w http.ResponseWriter , r *http.Request){
 	r.ParseForm()
 	fmt.Println("path",r.URL.Path)
@@ -93,7 +129,9 @@ func main(){
 	http.HandleFunc("/standard_value/low",updateTempValue)
 	http.HandleFunc("/standard_value/mediume",updateTempValue)
 	http.HandleFunc("/standard_value/high",updateTempValue)
-	err := http.ListenAndServe(":8000",nil)
+	http.HandleFunc("/balance_value/update",updateBalanceValue)
+	http.HandleFunc("/balance_value/read",readBalanceValue)
+	err := http.ListenAndServe(":8080",nil)
 	if err != nil{
 		log.Fatal("ListenAndServe:",err)
 	}
