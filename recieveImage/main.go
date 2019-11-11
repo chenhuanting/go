@@ -71,8 +71,7 @@ func updateBalanceValue(w http.ResponseWriter, r *http.Request){
 	r.ParseForm()
 	fmt.Println("path",r.URL.Path)
 	balanceValueBuff := r.FormValue("value")
-
-	balanceValue = string(balanceValueBuff[0])
+	balanceValue = string(balanceValueBuff)
 	fmt.Println("balance value:",balanceValue)
 	saveTempValue(balanceValue)
 		
